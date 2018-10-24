@@ -11,9 +11,9 @@ import torchvision.transforms as T
 import numpy as np
 
 from data import *
-from pytorchNetworks import *
+from pytorchNetworks.airplaneNetwork import *
 
-data = getData()
+#data = getData()
 NUM_TRAIN = 49000
 
 transform = T.Compose([T.ToTensor(), T.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
