@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from data_utils import get_CIFAR10_data
 
-data = get_CIFAR10_data()
-for k,v in list(data.items()):
-  print(('%s:' % k, v.shape))
+def getData():
+    data = get_CIFAR10_data()
+    for k,v in list(data.items()):
+        print(('%s:' % k, v.shape))
+    return data
