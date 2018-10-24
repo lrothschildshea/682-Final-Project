@@ -9,7 +9,7 @@ import torchvision.transforms as T
 
 import numpy as np
 
-from utils import *
+from .utils import *
 
 def airplaneNetwork(learning_rate, channels):
     model = nn.Sequential(

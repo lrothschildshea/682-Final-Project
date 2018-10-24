@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.data import sampler
+import torch.nn.functional as F
 
 import torchvision.datasets as dset
 import torchvision.transforms as T
@@ -98,5 +99,5 @@ def train_part34(model, optimizer, epochs=1):
                 check_accuracy_part34(loader_val, model)
                 print()
 
-model, optimizer = airplaneNetwork(13-3, [100])
+model, optimizer = airplaneNetwork(13-3, [3])
 train_part34(model, optimizer)
