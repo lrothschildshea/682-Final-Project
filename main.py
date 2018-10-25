@@ -2,6 +2,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data import sampler
 import torchvision.datasets as dset
 import torchvision.transforms as T
+from time import time
 
 from pytorchNetworks.airplaneNetwork import *
 from pytorchNetworks.automobileNetwork import *
@@ -14,6 +15,8 @@ from pytorchNetworks.horseNetwork import *
 from pytorchNetworks.shipNetwork import *
 from pytorchNetworks.truckNetwork import *
 from main_utils import *
+
+start = time()
 
 NUM_TRAIN = 49000
 
@@ -57,4 +60,10 @@ for i in range(10):
 
 for i in range(10):
     print('Checking Accuracy for Model #' + str(i+1))
-    check_accuracy(loader_test, models[i], device, dtype)
+    print()
+    print('preds')
+    print(check_accuracy(loader_test, models[i], device, dtype).size())
+
+end = time()
+print()
+print('Runtime: %f Minutes' % ((end-start)/60))
