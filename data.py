@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from data_utils import get_CIFAR10_data
 
+#this method is currently not used - possibly remove in the future if not needed
 def getData():
     data = get_CIFAR10_data()
     for k,v in list(data.items()):
