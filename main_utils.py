@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 
-def check_accuracy(loader, model, device, dtype, score, train):
+def check_accuracy(loader, model, device, score, train):
     
     if train:
         print('        Checking accuracy on validation set')
@@ -14,7 +14,7 @@ def check_accuracy(loader, model, device, dtype, score, train):
     out = out.to(device=device, dtype=torch.long)
     with torch.no_grad():
         for x, y in loader:
-            x = x.to(device=device, dtype=dtype)  # move to device, e.g. GPU
+            x = x.to(device=device, dtype=torch.float32)  # move to device, e.g. GPU
             y = y.to(device=device, dtype=torch.long)
 
             scores = model(x)
@@ -32,15 +32,14 @@ def check_accuracy(loader, model, device, dtype, score, train):
             print()
             return out
 
-def train_model(model, optimizer, device, dtype, loader_train, loader_val, score, epochs=1):
-
+def train_model(model, optimizer, device, loader_train, loader_val, score, epochs=1):
     model = model.to(device=device)
     for e in range(epochs):
         print('    epoch #' + str(e + 1))
         print()
         for t, (x, y) in enumerate(loader_train):
             model.train()  # put model to training mode
-            x = x.to(device=device, dtype=dtype)
+            x = x.to(device=device, dtype=torch.float32)
             y = y.to(device=device, dtype=torch.long)
             
             scores = model(x)
@@ -51,5 +50,5 @@ def train_model(model, optimizer, device, dtype, loader_train, loader_val, score
 
             if t % 100 == 0:
                 print('        Iteration %d, loss = %.4f' % (t, loss.item()))
-                check_accuracy(loader_val, model, device, dtype, score, True)
+                check_accuracy(loader_val, model, device, score, True)
                 print()
