@@ -5,6 +5,7 @@ import time
 import numpy as np #pylint: disable= E0401
 import matplotlib.pyplot as plt #pylint: disable= E0401
 from data_utils import get_CIFAR10_data
+import copy
 
 import torch #pylint: disable= E0401
 import torch.nn as nn #pylint: disable= E0401
@@ -74,6 +75,7 @@ def relabelDataPyTorch(data, score):
     list_loader_train = []
     list_loader_val = []
     list_loader_test = []
+    og_loader_test = []
     for batch in loader_train:
         batch_labels = batch[1]
         for i in range(0,list(batch_labels.size())[0]):
@@ -95,13 +97,15 @@ def relabelDataPyTorch(data, score):
         list_loader_val.append(batch)
     
     for batch in loader_test:
-        batch_labels = batch[1]
+        og_loader_test.append(batch)
+        b = copy.deepcopy(batch)
+        batch_labels = b[1]
         for k in range(0,list(batch_labels.size())[0]):
             if(batch_labels[k] == torch.LongTensor([score])):
                 batch_labels[k] = torch.LongTensor([1])
             else:
                 batch_labels[k] = torch.LongTensor([0])
-        batch[1] = batch_labels
-        list_loader_test.append(batch)
+        b[1] = batch_labels
+        list_loader_test.append(b)
 
-    return (list_loader_train, list_loader_val, list_loader_test)
+    return (list_loader_train, list_loader_val, list_loader_test, og_loader_test)
