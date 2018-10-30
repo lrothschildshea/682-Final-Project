@@ -22,7 +22,6 @@ start = time()
 loader_train, loader_val, loader_test = getDataPyTorch()
 
 USE_GPU = True
-dtype = torch.float32
 
 if USE_GPU and torch.cuda.is_available():
     device = torch.device('cuda')
@@ -46,14 +45,27 @@ models[9], optimizers[9] = truckNetwork(.1, [3])
 
 lltst = [None]*10
 
-for i in range(1):
+for i in range(10):
     print('Training Model #' + str(i+1))
     llt, llv, lltst[i] = relabelDataPyTorch((loader_train, loader_val, loader_test), i)
-    train_model(models[i], optimizers[i], device, dtype, llt, llv, i) #perhaps redo the parameters once we figure out how the data will be imported
+    train_model(models[i], optimizers[i], device, llt, llv, i)
 
-for i in range(1):
+out = [None]*10
+
+for i in range(10):
     print('Checking Accuracy for Model #' + str(i+1))
-    check_accuracy(lltst[i], models[i], device, dtype, i, False)
+    out[i] = check_accuracy(lltst[i], models[i], device, i, False)
+
+labels = torch.zeros(10000, dtype=torch.long)
+labels = labels.to(device=device, dtype=torch.long)
+
+for i in range(10):
+    for j in range(10000):
+        if out[i][j] !=0:
+            labels[j] = i
+
+print(labels)
+
 
 end = time()
 print()
