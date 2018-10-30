@@ -4,8 +4,10 @@ from .utils import *
 
 def airplaneNetwork(learning_rate, channels):
     model = nn.Sequential(
+        nn.Conv2d(channels[0], channels[1], (5, 5), padding=2),
+        nn.ReLU(),
         Flatten(),
-        nn.Linear(channels[0]*32*32, 10),
+        nn.Linear(channels[2]*32*32, 2),
     )
     optimizer = optim.SGD(model.parameters(), lr=learning_rate)
 

@@ -5,7 +5,7 @@ from .utils import *
 def deerNetwork(learning_rate, channels):
     model = nn.Sequential(
         Flatten(),
-        nn.Linear(channels[0]*32*32, 10),
+        nn.Linear(channels[0]*32*32, 2),
     )
     optimizer = optim.SGD(model.parameters(), lr=learning_rate)
 
