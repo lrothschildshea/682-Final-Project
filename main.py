@@ -15,22 +15,11 @@ from pytorchNetworks.horseNetwork import *
 from pytorchNetworks.shipNetwork import *
 from pytorchNetworks.truckNetwork import *
 from main_utils import *
-from data import relabelDataPyTorch
+from data import relabelDataPyTorch, getDataPyTorch
 
 start = time()
 
-NUM_TRAIN = 49000
-
-transform = T.Compose([T.ToTensor(), T.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
-
-cifar10_train = dset.CIFAR10('./dataset', train=True, download=True, transform=transform)
-loader_train = DataLoader(cifar10_train, batch_size=64, sampler=sampler.SubsetRandomSampler(range(NUM_TRAIN)))
-
-cifar10_val = dset.CIFAR10('./dataset', train=True, download=True, transform=transform)
-loader_val = DataLoader(cifar10_val, batch_size=64, sampler=sampler.SubsetRandomSampler(range(NUM_TRAIN, 50000)))
-
-cifar10_test = dset.CIFAR10('./dataset', train=False, download=True, transform=transform)
-loader_test = DataLoader(cifar10_test, batch_size=64)
+loader_train, loader_val, loader_test = getDataPyTorch()
 
 USE_GPU = True
 dtype = torch.float32
@@ -55,19 +44,16 @@ models[7], optimizers[7] = horseNetwork(.1, [3])
 models[8], optimizers[8] = shipNetwork(.1, [3])
 models[9], optimizers[9] = truckNetwork(.1, [3])
 
-lt = [None]*10
-llt = [None]*10
-llv = [None]*10
 lltst = [None]*10
 
-for i in range(10):
+for i in range(1):
     print('Training Model #' + str(i+1))
-    lt[i], llt[i], llv[i], lltst[i] = relabelDataPyTorch((loader_train, loader_val, loader_test), i)
-    train_model(models[i], optimizers[i], device, dtype, llt[i], llv[i], i) #perhaps redo the parameters once we figure out how the data will be imported
+    llt, llv, lltst[i] = relabelDataPyTorch((loader_train, loader_val, loader_test), i)
+    train_model(models[i], optimizers[i], device, dtype, llt, llv, i) #perhaps redo the parameters once we figure out how the data will be imported
 
-for i in range(10):
+for i in range(1):
     print('Checking Accuracy for Model #' + str(i+1))
-    check_accuracy(lltst[i], models[i], device, dtype, i)
+    check_accuracy(lltst[i], models[i], device, dtype, i, False)
 
 end = time()
 print()

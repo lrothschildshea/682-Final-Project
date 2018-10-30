@@ -103,5 +103,5 @@ def relabelDataPyTorch(data, score):
                 batch_labels[k] = torch.LongTensor([0])
         batch[1] = batch_labels
         list_loader_test.append(batch)
-    
-    return (loader_train, list_loader_train, list_loader_val, list_loader_test)
+
+    return (list_loader_train, list_loader_val, list_loader_test)
