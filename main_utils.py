@@ -52,3 +52,33 @@ def train_model(model, optimizer, device, loader_train, loader_val, score, epoch
                 print('        Iteration %d, loss = %.4f' % (t, loss.item()))
                 check_accuracy(loader_val, model, device, score, True)
                 print()
+
+def combine_labels(labelset, num_labels, device):
+    labels = torch.zeros(10000, dtype=torch.long)
+    labels = labels.to(device=device, dtype=torch.long)
+    print('Combining Labels')
+    for i in range(num_labels):
+        for j in range(10000):
+            if labelset[i][j] == 1:
+                labels[j] = i
+
+    return labels
+
+def count_collisions(labelset, num_labels, device):
+    print('Counting label collisions and unlabled images')
+    labels = torch.zeros(10000, dtype=torch.long)
+    labels = labels.to(device=device, dtype=torch.long)
+    collision = 0
+    unlabeled = 0
+
+    for i in range(num_labels):
+        labels += labelset[i]
+    for i in range(10000):
+        if labels[i] > 1:
+            collision += labels[i]-1
+        if labels[i] == 0:
+            unlabeled += 1
+
+    print("%d Label Collsions" % collision)
+    print("%d unlabeled" % unlabeled)
+    print()

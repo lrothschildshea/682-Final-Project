@@ -50,23 +50,17 @@ models[9], optimizers[9] = truckNetwork(.01, [3, 32, 32])
 for i in range(NUM_LABELS):
     print('Training Model #' + str(i+1))
     llt, llv, lltst[i], lbltst = relabelDataPyTorch((loader_train, loader_val, loader_test), i, device)
-    train_model(models[i], optimizers[i], device, llt, llv, i)
+    train_model(models[i], optimizers[i], device, llt, llv, i, epochs=1)
 
 for i in range(NUM_LABELS):
     print('Checking Accuracy for Model #' + str(i+1))
     out[i] = check_accuracy(lltst[i], models[i], device, i, False)
 
-labels = torch.zeros(10000, dtype=torch.long)
-labels = labels.to(device=device, dtype=torch.long)
-print('Combining Labels')
-for i in range(NUM_LABELS):
-    for j in range(10000):
-        if out[i][j] == 1:
-            labels[j] = i
-
+labels = combine_labels(out, NUM_LABELS, device)
 correct = (labels == lbltst).sum()
-
 print('Got %d / 10000 correct (%.2f)' % (correct, (float(correct)/100.0)))
+
+count_collisions(out, NUM_LABELS, device)
 
 end = time()
 print()
