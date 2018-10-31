@@ -70,12 +70,13 @@ def getDataPyTorch():
 
     return (loader_train, loader_val, loader_test)
 
-def relabelDataPyTorch(data, score):
+def relabelDataPyTorch(data, score, device):
     loader_train, loader_val, loader_test = data
     list_loader_train = []
     list_loader_val = []
     list_loader_test = []
-    og_loader_test = []
+    og_loader_test = torch.tensor([], dtype=torch.long)
+    og_loader_test = og_loader_test.to(device=device, dtype=torch.long)
     for batch in loader_train:
         batch_labels = batch[1]
         for i in range(0,list(batch_labels.size())[0]):
@@ -97,7 +98,7 @@ def relabelDataPyTorch(data, score):
         list_loader_val.append(batch)
     
     for batch in loader_test:
-        og_loader_test.append(batch)
+        og_loader_test = torch.cat((og_loader_test, batch[1].to(device=device, dtype=torch.long)), 0)
         b = copy.deepcopy(batch)
         batch_labels = b[1]
         for k in range(0,list(batch_labels.size())[0]):
