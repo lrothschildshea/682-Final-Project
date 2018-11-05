@@ -35,6 +35,7 @@ models = [None]*10
 optimizers = [None]*10
 lltst = [None]*10
 out = [None]*10
+all_scores = [None]*10
 
 models[0], optimizers[0] = airplaneNetwork(.01, [3, 32, 32])
 models[1], optimizers[1] = automobileNetwork(.01, [3, 32, 32])
@@ -54,9 +55,9 @@ for i in range(NUM_LABELS):
 
 for i in range(NUM_LABELS):
     print('Checking Accuracy for Model #' + str(i+1))
-    out[i] = check_accuracy(lltst[i], models[i], device, i, False)
+    out[i],all_scores[i] = check_accuracy(lltst[i], models[i], device, i, False)
 
-labels = combine_labels(out, NUM_LABELS, device)
+labels = combine_labels(out, all_scores, NUM_LABELS, device)
 correct = (labels == lbltst).sum()
 print('Got %d / 10000 correct (%.2f)' % (correct, (float(correct)/100.0)))
 

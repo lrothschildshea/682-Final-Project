@@ -1,5 +1,5 @@
-import torch
-import torch.nn.functional as F
+import torch #pylint: disable= E0401
+import torch.nn.functional as F #pylint: disable= E0401
 
 def check_accuracy(loader, model, device, score, train):
     
@@ -10,7 +10,10 @@ def check_accuracy(loader, model, device, score, train):
     num_correct = 0
     num_samples = 0
     model.eval()  # set model to evaluation mode
+
+    all_scores = torch.tensor([])
     out = torch.tensor([])
+    all_scores = all_scores.to(device = device, dtype = torch.float)
     out = out.to(device=device, dtype=torch.long)
     with torch.no_grad():
         for x, y in loader:
@@ -21,6 +24,7 @@ def check_accuracy(loader, model, device, score, train):
             _, preds = scores.max(1)
             if not train:
                 out = torch.cat((out, preds), 0)
+                all_scores = torch.cat((all_scores, scores), 0)
             num_correct += (preds == y).sum()
             num_samples += preds.size(0)
         acc = float(num_correct) / num_samples
@@ -30,7 +34,7 @@ def check_accuracy(loader, model, device, score, train):
         else:
             print('    Got %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
             print()
-            return out
+            return out, all_scores
 
 def train_model(model, optimizer, device, loader_train, loader_val, score, epochs=1):
     model = model.to(device=device)
@@ -53,8 +57,22 @@ def train_model(model, optimizer, device, loader_train, loader_val, score, epoch
                 check_accuracy(loader_val, model, device, score, True)
                 print()
 
-def combine_labels(labelset, num_labels, device):
-    labels = torch.zeros(10000, dtype=torch.long)
+def combine_labels(labelset, scoreset, num_labels, device):
+    labels = torch.ones(10000, dtype=torch.long) * 10
+    labels = labels.to(device=device, dtype=torch.long)
+    print('Combining Labels')
+    for i in range(num_labels):
+        for j in range(10000):
+            if labelset[i][j] == 1:
+                if labels[j] == 10:
+                    labels[j] = i
+                elif  torch.abs(scoreset[labels[j]][j][0] - scoreset[labels[j]][j][1]) < torch.abs(scoreset[i][j][0] - scoreset[i][j][1]):
+                    labels[j] = i
+
+    return labels
+
+def combine_labels_2(labelset, num_labels, device):
+    labels = torch.ones(10000, dtype=torch.long) * 10
     labels = labels.to(device=device, dtype=torch.long)
     print('Combining Labels')
     for i in range(num_labels):
