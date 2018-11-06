@@ -1,7 +1,7 @@
 import torch #pylint: disable= E0401
 import torch.nn.functional as F #pylint: disable= E0401
 
-def check_accuracy(loader, model, device, score, train):
+def check_accuracy(loader, model, device, train):
     
     if train:
         print('        Checking accuracy on validation set')
@@ -36,7 +36,7 @@ def check_accuracy(loader, model, device, score, train):
             print()
             return out, all_scores
 
-def train_model(model, optimizer, device, loader_train, loader_val, score, epochs=1):
+def train_model(model, optimizer, device, loader_train, loader_val, epochs=1):
     model = model.to(device=device)
     for e in range(epochs):
         print('    epoch #' + str(e + 1))
@@ -54,7 +54,7 @@ def train_model(model, optimizer, device, loader_train, loader_val, score, epoch
 
             if t % 100 == 0:
                 print('        Iteration %d, loss = %.4f' % (t, loss.item()))
-                check_accuracy(loader_val, model, device, score, True)
+                check_accuracy(loader_val, model, device, True)
                 print()
 
 def combine_labels(labelset, scoreset, num_labels, device):
