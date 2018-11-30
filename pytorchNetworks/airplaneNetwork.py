@@ -2,6 +2,9 @@ import torch.nn as nn
 import torch.optim as optim
 from .utils import *
 
+def init_weights(m):
+    if type(m) == nn.Linear or type(m) == nn.Conv2d:
+        nn.init.xavier_uniform_(m.weight)
 
 def airplaneNetwork(learning_rate, channels):
     model = nn.Sequential(
@@ -28,6 +31,8 @@ def airplaneNetwork(learning_rate, channels):
         Flatten(),
         nn.Linear(128, 2),
     )
-    optimizer = optim.RMSprop(model.parameters(), lr=.01)
+
+    model.apply(init_weights)
+    optimizer = optim.RMSprop(model.parameters(), lr=.0005)
 
     return model, optimizer

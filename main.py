@@ -39,16 +39,16 @@ lltst = [None]*10
 out = [None]*10
 all_scores = [None]*10
 
-models[0], optimizers[0] = airplaneNetwork(.13, [3, 32, 32])
-models[1], optimizers[1] = airplaneNetwork(.13, [3, 32, 32])
-models[2], optimizers[2] = airplaneNetwork(.13, [3, 32, 32])
-models[3], optimizers[3] = airplaneNetwork(.13, [3, 32, 32])
-models[4], optimizers[4] = airplaneNetwork(.13, [3, 32, 32])
-models[5], optimizers[5] = airplaneNetwork(.13, [3, 32, 32])
-models[6], optimizers[6] = airplaneNetwork(.13, [3, 32, 32])
-models[7], optimizers[7] = airplaneNetwork(.13, [3, 32, 32])
-models[8], optimizers[8] = airplaneNetwork(.13, [3, 32, 32])
-models[9], optimizers[9] = airplaneNetwork(.13, [3, 32, 32])
+models[0], optimizers[0] = airplaneNetwork(.13, [3, 32, 32])        #airplane
+models[1], optimizers[1] = automobileNetwork()      #automobile
+models[2], optimizers[2] = airplaneNetwork(.13, [3, 32, 32])        #bird
+models[3], optimizers[3] = airplaneNetwork(.13, [3, 32, 32])        #cat
+models[4], optimizers[4] = airplaneNetwork(.13, [3, 32, 32])        #deer
+models[5], optimizers[5] = airplaneNetwork(.13, [3, 32, 32])        #dog
+models[6], optimizers[6] = airplaneNetwork(.13, [3, 32, 32])        #frog
+models[7], optimizers[7] = airplaneNetwork(.13, [3, 32, 32])        #horse
+models[8], optimizers[8] = shipNetwork()        #ship
+models[9], optimizers[9] = airplaneNetwork(.13, [3, 32, 32])        #truck
 m, o = allLabelsNetwork(.01, [3, 32, 32])
 
 for i in range(NUM_LABELS):
