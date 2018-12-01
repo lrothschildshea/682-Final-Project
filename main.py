@@ -39,16 +39,16 @@ lltst = [None]*10
 out = [None]*10
 all_scores = [None]*10
 
-models[0], optimizers[0] = airplaneNetwork(.13, [3, 32, 32])        #airplane
+models[0], optimizers[0] = catNetwork(.13, [3, 32, 32])        #airplane
 models[1], optimizers[1] = automobileNetwork()      #automobile
-models[2], optimizers[2] = airplaneNetwork(.13, [3, 32, 32])        #bird
-models[3], optimizers[3] = airplaneNetwork(.13, [3, 32, 32])        #cat
-models[4], optimizers[4] = airplaneNetwork(.13, [3, 32, 32])        #deer
-models[5], optimizers[5] = airplaneNetwork(.13, [3, 32, 32])        #dog
-models[6], optimizers[6] = airplaneNetwork(.13, [3, 32, 32])        #frog
-models[7], optimizers[7] = airplaneNetwork(.13, [3, 32, 32])        #horse
+models[2], optimizers[2] = catNetwork(.13, [3, 32, 32])        #bird
+models[3], optimizers[3] = catNetwork(.13, [3, 32, 32])        #cat
+models[4], optimizers[4] = catNetwork(.13, [3, 32, 32])        #deer
+models[5], optimizers[5] = catNetwork(.13, [3, 32, 32])        #dog
+models[6], optimizers[6] = catNetwork(.13, [3, 32, 32])        #frog
+models[7], optimizers[7] = catNetwork(.13, [3, 32, 32])        #horse
 models[8], optimizers[8] = shipNetwork()        #ship
-models[9], optimizers[9] = airplaneNetwork(.13, [3, 32, 32])        #truck
+models[9], optimizers[9] = catNetwork(.13, [3, 32, 32])        #truck
 m, o = allLabelsNetwork(.01, [3, 32, 32])
 
 for i in range(NUM_LABELS):
@@ -66,11 +66,9 @@ print('Got %d / 10000 correct (%.2f)' % (correct, (float(correct)/100.0)))
 
 count_collisions(out, NUM_LABELS, device)
 
-'''
 print('Training 10 label network')
 train_model(m, o, device, loader_train, loader_val, epochs=NUM_EPOCHS)
 check_accuracy(loader_test, m, device, False)
-'''
 
 end = time()
 print()
