@@ -45,8 +45,8 @@ models[2], optimizers[2] = airplaneNetwork()        #bird
 models[3], optimizers[3] = catNetwork()        #cat
 models[4], optimizers[4] = airplaneNetwork()        #deer
 models[5], optimizers[5] = airplaneNetwork()        #dog
-models[6], optimizers[6] = airplaneNetwork()        #frog
-models[7], optimizers[7] = airplaneNetwork()        #horse
+models[6], optimizers[6] = frogNetwork()        #frog
+models[7], optimizers[7] = horseNetwork()        #horse
 models[8], optimizers[8] = shipNetwork()        #ship
 models[9], optimizers[9] = truckNetwork()        #truck
 m, o = allLabelsNetwork(.01, [3, 32, 32])
@@ -77,6 +77,4 @@ print()
 print('Runtime: %d Minutes and %f Seconds' % (((end-start)//60), ((end-start)%60)))
 
 # Makes noise to indicate completion
-print('\a')
-print('\a')
 print('\a')
