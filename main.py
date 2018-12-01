@@ -39,16 +39,16 @@ lltst = [None]*10
 out = [None]*10
 all_scores = [None]*10
 
-models[0], optimizers[0] = catNetwork(.13, [3, 32, 32])        #airplane
+models[0], optimizers[0] = airplaneNetwork()        #airplane
 models[1], optimizers[1] = automobileNetwork()      #automobile
-models[2], optimizers[2] = catNetwork(.13, [3, 32, 32])        #bird
-models[3], optimizers[3] = catNetwork(.13, [3, 32, 32])        #cat
-models[4], optimizers[4] = catNetwork(.13, [3, 32, 32])        #deer
-models[5], optimizers[5] = catNetwork(.13, [3, 32, 32])        #dog
-models[6], optimizers[6] = catNetwork(.13, [3, 32, 32])        #frog
-models[7], optimizers[7] = catNetwork(.13, [3, 32, 32])        #horse
+models[2], optimizers[2] = airplaneNetwork()        #bird
+models[3], optimizers[3] = catNetwork()        #cat
+models[4], optimizers[4] = airplaneNetwork()        #deer
+models[5], optimizers[5] = airplaneNetwork()        #dog
+models[6], optimizers[6] = airplaneNetwork()        #frog
+models[7], optimizers[7] = airplaneNetwork()        #horse
 models[8], optimizers[8] = shipNetwork()        #ship
-models[9], optimizers[9] = catNetwork(.13, [3, 32, 32])        #truck
+models[9], optimizers[9] = truckNetwork()        #truck
 m, o = allLabelsNetwork(.01, [3, 32, 32])
 
 for i in range(NUM_LABELS):
@@ -73,3 +73,8 @@ check_accuracy(loader_test, m, device, False)
 end = time()
 print()
 print('Runtime: %d Minutes and %f Seconds' % (((end-start)//60), ((end-start)%60)))
+
+# Makes noise to indicate completion
+print('\a')
+print('\a')
+print('\a')
