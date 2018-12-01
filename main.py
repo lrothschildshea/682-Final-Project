@@ -66,11 +66,9 @@ print('Got %d / 10000 correct (%.2f)' % (correct, (float(correct)/100.0)))
 
 count_collisions(out, NUM_LABELS, device)
 
-'''
 print('Training 10 label network')
 train_model(m, o, device, loader_train, loader_val, epochs=NUM_EPOCHS)
 check_accuracy(loader_test, m, device, False)
-'''
 
 end = time()
 print()
