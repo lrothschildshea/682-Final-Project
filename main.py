@@ -76,5 +76,3 @@ print('Runtime: %d Minutes and %f Seconds' % (((end-start)//60), ((end-start)%60
 
 # Makes noise to indicate completion
 print('\a')
-print('\a')
-print('\a')
