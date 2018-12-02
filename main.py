@@ -41,22 +41,22 @@ all_scores = [None]*10
 
 models[0], optimizers[0] = airplaneNetwork()        #airplane
 models[1], optimizers[1] = automobileNetwork()      #automobile
-models[2], optimizers[2] = airplaneNetwork()         #bird
-models[3], optimizers[3] = airplaneNetwork()        #cat
+models[2], optimizers[2] = catNetwork()         #bird
+models[3], optimizers[3] = catNetwork()        #cat
 models[4], optimizers[4] = airplaneNetwork()         #deer
-models[5], optimizers[5] = dogNetwork()        #dog
+models[5], optimizers[5] = catNetwork()        #dog
 models[6], optimizers[6] = frogNetwork()         #frog
 models[7], optimizers[7] = horseNetwork()         #horse
 models[8], optimizers[8] = shipNetwork()        #ship
 models[9], optimizers[9] = truckNetwork()        #truck
 m, o = allLabelsNetwork(.01, [3, 32, 32])
 
-for i in [0]:
+for i in [0, 2, 3, 5]:
     print('Training Model #' + str(i+1))
     llt, llv, lltst[i], lbltst = relabelDataPyTorch((loader_train, loader_val, loader_test), i, device)
     train_model(models[i], optimizers[i], device, llt, llv, epochs=NUM_EPOCHS)
 
-for i in [0]:
+for i in [0, 2, 3, 5]:
     print('Checking Accuracy for Model #' + str(i+1))
     out[i],all_scores[i] = check_accuracy(lltst[i], models[i], device, False)
 

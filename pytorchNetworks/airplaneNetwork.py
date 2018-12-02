@@ -8,33 +8,35 @@ def init_weights(m):
 
 def airplaneNetwork():
     model = nn.Sequential(
-        nn.Conv2d(3, 64, (3, 3), padding=2),
-        nn.LeakyReLU(.001),
-        nn.MaxPool2d((2, 2), stride=2),
-        nn.Conv2d(64, 48, (5, 5), padding=3),
-        nn.LeakyReLU(.001),
-        nn.Dropout(p=.3),
-        nn.MaxPool2d((2, 2), stride=2),
-        nn.Conv2d(48, 32, (3, 3), padding=2),
-        nn.LeakyReLU(.001),
-        nn.MaxPool2d((2, 2), stride=2),
-        nn.Conv2d(32, 64, (3, 3), padding=2),
-        nn.LeakyReLU(.001),
-        nn.Dropout(p=.2),
-        nn.MaxPool2d((2, 2), stride=2),
-        nn.Conv2d(64, 32, (3, 3), padding=2),
-        nn.LeakyReLU(.001),
-        nn.MaxPool2d((2, 2), stride=2),
-        nn.Conv2d(32, 24, (5, 5), padding=3),
-        nn.LeakyReLU(.001),
-        nn.Dropout(p=.1),
-        nn.MaxPool2d((2, 2), stride=2),
-        nn.Conv2d(24, 48, (5, 5), padding=3),
+        nn.Conv2d(3, 16, 3, 1, 1),
+        nn.ELU(alpha = 1.0),
+        nn.Conv2d(16, 32, 5, 1, 2),
+        nn.ELU(alpha = 1.0),
+        nn.BatchNorm2d(32),
+        nn.Dropout(0.2),
+        nn.MaxPool2d(2,2),
+        nn.Conv2d(32, 24, 5, 1, 2),
+        nn.ELU(alpha = 1.0),
+        nn.Conv2d(24, 64, 5, 1, 2),
+        nn.ELU(alpha = 1.0),
+        nn.BatchNorm2d(64),
+        nn.Dropout(0.2),
+        nn.MaxPool2d(2,2),
+        nn.Conv2d(64, 64, 7, 1, 3),
+        nn.ELU(alpha = 1.0),
+        nn.Conv2d(64, 128, 9, 1, 4),
+        nn.ELU(alpha = 1.0),
+        nn.BatchNorm2d(128),
+        nn.Dropout(0.2),
+        nn.MaxPool2d(2,2),
         Flatten(),
-        nn.Linear(768, 2),
+        nn.Linear(2048, 64),
+        nn.BatchNorm1d(64),
+        nn.ELU(alpha = 1.0),
+        nn.Linear(64, 64)
     )
 
     model.apply(init_weights)
-    optimizer = optim.RMSprop(model.parameters(), lr=.0007)
+    optimizer = optim.RMSprop(model.parameters(), lr=0.002)
 
     return model, optimizer
