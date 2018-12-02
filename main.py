@@ -49,26 +49,27 @@ models[6], optimizers[6] = frogNetwork()         #frog
 models[7], optimizers[7] = horseNetwork()         #horse
 models[8], optimizers[8] = shipNetwork()        #ship
 models[9], optimizers[9] = truckNetwork()        #truck
-m, o = allLabelsNetwork(.01, [3, 32, 32])
+m, o = allLabelsNetwork()
 
-for i in [0, 2, 3, 5]:
+for i in range(NUM_LABELS):
     print('Training Model #' + str(i+1))
     llt, llv, lltst[i], lbltst = relabelDataPyTorch((loader_train, loader_val, loader_test), i, device)
     train_model(models[i], optimizers[i], device, llt, llv, epochs=NUM_EPOCHS)
 
-for i in [0, 2, 3, 5]:
+print('Training 10 label network')
+train_model(m, o, device, loader_train, loader_val, epochs=NUM_EPOCHS)
+
+print('Checking Accuracy for All Labels Model')
+check_accuracy(loader_test, m, device, False)
+
+for i in range(NUM_LABELS):
     print('Checking Accuracy for Model #' + str(i+1))
     out[i],all_scores[i] = check_accuracy(lltst[i], models[i], device, False)
 
 labels = combine_labels(out, all_scores, NUM_LABELS, device)
 correct = (labels == lbltst).sum()
 print('Got %d / 10000 correct (%.2f)' % (correct, (float(correct)/100.0)))
-
 count_collisions(out, NUM_LABELS, device)
-
-print('Training 10 label network')
-train_model(m, o, device, loader_train, loader_val, epochs=NUM_EPOCHS)
-check_accuracy(loader_test, m, device, False)
 
 end = time()
 print()
