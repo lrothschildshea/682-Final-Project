@@ -6,7 +6,7 @@ def init_weights(m):
     if type(m) == nn.Linear or type(m) == nn.Conv2d or type(m) == nn.ConvTranspose2d:
         nn.init.xavier_uniform_(m.weight)
 
-def deerNetwork(learning_rate, channels):
+def deerNetwork():
     model = nn.Sequential(
         nn.Conv2d(3, 32, 3, 1, 1),
         nn.Dropout(0.1),
