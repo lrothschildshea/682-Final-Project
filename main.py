@@ -41,10 +41,10 @@ all_scores = [None]*10
 
 models[0], optimizers[0] = airplaneNetwork()        #airplane
 models[1], optimizers[1] = automobileNetwork()      #automobile
-models[2], optimizers[2] = catNetwork()         #bird
+models[2], optimizers[2] = birdNetwork()         #bird
 models[3], optimizers[3] = catNetwork()        #cat
-models[4], optimizers[4] = airplaneNetwork()         #deer
-models[5], optimizers[5] = catNetwork()        #dog
+models[4], optimizers[4] = deerNetwork()         #deer
+models[5], optimizers[5] = dogNetwork()        #dog
 models[6], optimizers[6] = frogNetwork()         #frog
 models[7], optimizers[7] = horseNetwork()         #horse
 models[8], optimizers[8] = shipNetwork()        #ship

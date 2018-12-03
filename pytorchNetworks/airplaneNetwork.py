@@ -33,7 +33,7 @@ def airplaneNetwork():
         nn.Linear(2048, 64),
         nn.BatchNorm1d(64),
         nn.ELU(alpha = 1.0),
-        nn.Linear(64, 64)
+        nn.Linear(64, 2)
     )
 
     model.apply(init_weights)

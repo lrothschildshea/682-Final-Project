@@ -34,7 +34,7 @@ def dogNetwork():
         nn.Linear(64,64),
         nn.BatchNorm1d(64),
         nn.ReLU(),
-        nn.Linear(64,64)
+        nn.Linear(64,2)
     )
     model.apply(init_weights)
     optimizer = optim.Adam(model.parameters(), lr=0.005, betas = (0.85, 0.99))
