@@ -32,63 +32,54 @@ print('using device:', device)
 
 NUM_LABELS = 10
 NUM_EPOCHS = 1
+NUM_TRAINING = 1
 
-models = [None]*50
-optimizers = [None]*50
+if NUM_EPOCHS < 1:
+    NUM_EPOCHS = 1
+if NUM_TRAINING < 1:
+    NUM_TRAINING = 1
+
+models = [None]*(10*NUM_TRAINING)
+optimizers = [None]*(10*NUM_TRAINING)
 lltst = [None]*10
 out = [None]*10
 all_scores = [None]*10
 best_models = [None]*10
 
-for i in range(5):
+print()
+print('Creating Models')
+for i in range(NUM_TRAINING):
     models[i], optimizers[i] = airplaneNetwork()
-
-for i in range(5,10):
-    models[i], optimizers[i] = automobileNetwork()
-
-for i in range(10,15):
-    models[i], optimizers[i] = birdNetwork()
-
-for i in range(15, 20):
-    models[i], optimizers[i] = catNetwork()
-
-for i in range(20, 25):
-    models[i], optimizers[i] = deerNetwork() 
-
-for i in range(25, 30):
-    models[i], optimizers[i] = dogNetwork()
-
-for i in range(30, 35):
-    models[i], optimizers[i] = frogNetwork()
-
-for i in range(35, 40):
-    models[i], optimizers[i] = horseNetwork()
-
-for i in range(40, 45):
-    models[i], optimizers[i] = shipNetwork()
-
-for i in range(45, 50):
-    models[i], optimizers[i] = truckNetwork()
-
+    models[NUM_TRAINING + i], optimizers[NUM_TRAINING + i] = automobileNetwork()
+    models[2*NUM_TRAINING + i], optimizers[2*NUM_TRAINING + i] = birdNetwork()
+    models[3*NUM_TRAINING + i], optimizers[3*NUM_TRAINING + i] = catNetwork()
+    models[4*NUM_TRAINING + i], optimizers[4*NUM_TRAINING + i] = deerNetwork() 
+    models[5*NUM_TRAINING + i], optimizers[5*NUM_TRAINING + i] = dogNetwork()
+    models[6*NUM_TRAINING + i], optimizers[6*NUM_TRAINING + i] = frogNetwork()
+    models[7*NUM_TRAINING + i], optimizers[7*NUM_TRAINING + i] = horseNetwork()
+    models[8*NUM_TRAINING + i], optimizers[8*NUM_TRAINING + i] = shipNetwork()
+    models[9*NUM_TRAINING + i], optimizers[9*NUM_TRAINING + i] = truckNetwork()
 m, o = allLabelsNetwork()
 
 for i in range(NUM_LABELS):
     llt, llv, lltst[i], lbltst = relabelDataPyTorch((loader_train, loader_val, loader_test), i, device)
     best_acc = -1
-    for j in range(5):
+    for j in range(NUM_TRAINING):
         print('Training Model #' + str(i+1) + '-' + str(j+1))
-        idx = i*5 + j
+        idx = i*NUM_TRAINING + j
         train_model(models[idx], optimizers[idx], device, llt, llv, epochs=NUM_EPOCHS)
         _, _, acc = check_accuracy(llv, models[idx], device, False)
         if acc.item() > best_acc:
             best_acc = acc.item()
             best_models[i] = models[idx]
 
-
-
 print('Training 10 label network')
 train_model(m, o, device, loader_train, loader_val, epochs=NUM_EPOCHS)
 
+print()
+print()
+print()
+print()
 print('Checking Accuracy for All Labels Model')
 check_accuracy(loader_test, m, device, False)
 
