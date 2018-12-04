@@ -51,11 +51,7 @@ models[8], optimizers[8] = shipNetwork()        #ship
 models[9], optimizers[9] = truckNetwork()        #truck
 m, o = allLabelsNetwork()
 
-<<<<<<< HEAD
-for i in [2]:
-=======
 for i in range(NUM_LABELS):
->>>>>>> b57de4b2b530fe3304b5fb77cb85c84b0db2181f
     print('Training Model #' + str(i+1))
     llt, llv, lltst[i], lbltst = relabelDataPyTorch((loader_train, loader_val, loader_test), i, device)
     train_model(models[i], optimizers[i], device, llt, llv, epochs=NUM_EPOCHS)
@@ -66,13 +62,8 @@ train_model(m, o, device, loader_train, loader_val, epochs=NUM_EPOCHS)
 
 print('Checking Accuracy for All Labels Model')
 check_accuracy(loader_test, m, device, False)
-<<<<<<< HEAD
-'''
-for i in [2]:
-=======
 
 for i in range(NUM_LABELS):
->>>>>>> b57de4b2b530fe3304b5fb77cb85c84b0db2181f
     print('Checking Accuracy for Model #' + str(i+1))
     out[i],all_scores[i] = check_accuracy(lltst[i], models[i], device, False)
 
