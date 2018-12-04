@@ -17,7 +17,7 @@ def check_accuracy(loader, model, device, train):
     out = out.to(device=device, dtype=torch.long)
     with torch.no_grad():
         for x, y in loader:
-            x = x.to(device=device, dtype=torch.float32)  # move to device, e.g. GPU
+            x = x.to(device=device, dtype=torch.float32)
             y = y.to(device=device, dtype=torch.long)
 
             scores = model(x)
@@ -30,11 +30,11 @@ def check_accuracy(loader, model, device, train):
         acc = float(num_correct) / num_samples
 
         if train:
-            print('        Got %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
+            print('         %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
         else:
-            print('    Got %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
+            print('     %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
             print()
-            return out, all_scores
+            return out, all_scores, num_correct
 
 def train_model(model, optimizer, device, loader_train, loader_val, epochs=1):
     model = model.to(device=device)
@@ -52,7 +52,7 @@ def train_model(model, optimizer, device, loader_train, loader_val, epochs=1):
             loss.backward()
             optimizer.step()
 
-            if t % 100 == 0:
+            if t % 175 == 0:
                 print('        Iteration %d, loss = %.4f' % (t, loss.item()))
                 check_accuracy(loader_val, model, device, True)
                 print()
@@ -68,17 +68,6 @@ def combine_labels(labelset, scoreset, num_labels, device):
                     labels[j] = i
                 elif  torch.abs(scoreset[labels[j]][j][0] - scoreset[labels[j]][j][1]) < torch.abs(scoreset[i][j][0] - scoreset[i][j][1]):
                     labels[j] = i
-
-    return labels
-
-def combine_labels_2(labelset, num_labels, device):
-    labels = torch.ones(10000, dtype=torch.long) * 10
-    labels = labels.to(device=device, dtype=torch.long)
-    print('Combining Labels')
-    for i in range(num_labels):
-        for j in range(10000):
-            if labelset[i][j] == 1:
-                labels[j] = i
 
     return labels
 
