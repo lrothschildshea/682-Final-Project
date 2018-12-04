@@ -68,7 +68,6 @@ def combine_labels(labelset, scoreset, num_labels, device):
                     labels[j] = i
                 elif  torch.abs(scoreset[labels[j]][j][0] - scoreset[labels[j]][j][1]) < torch.abs(scoreset[i][j][0] - scoreset[i][j][1]):
                     labels[j] = i
-
     return labels
 
 def count_collisions(labelset, num_labels, device):
