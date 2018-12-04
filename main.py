@@ -31,7 +31,7 @@ else:
 print('using device:', device)
 
 NUM_LABELS = 10
-NUM_EPOCHS = 20
+NUM_EPOCHS = 10
 
 models = [None]*10
 optimizers = [None]*10
