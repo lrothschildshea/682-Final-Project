@@ -17,6 +17,8 @@ from pytorchNetworks.truckNetwork import *
 from pytorchNetworks.allLabelsNetwork import *
 from main_utils import *
 from data import relabelDataPyTorch, getDataPyTorch
+import numpy as np
+from visuals import imageGrid
 
 start = time()
 
@@ -31,7 +33,7 @@ else:
 print('using device:', device)
 
 NUM_LABELS = 10
-NUM_EPOCHS = 20
+NUM_EPOCHS = 10
 
 models = [None]*10
 optimizers = [None]*10
@@ -63,9 +65,12 @@ train_model(m, o, device, loader_train, loader_val, epochs=NUM_EPOCHS)
 print('Checking Accuracy for All Labels Model')
 check_accuracy(loader_test, m, device, False)
 
+data = [None]*10
 for i in range(NUM_LABELS):
     print('Checking Accuracy for Model #' + str(i+1))
-    out[i],all_scores[i] = check_accuracy(lltst[i], models[i], device, False)
+    out[i],all_scores[i], data[i] = check_accuracy(lltst[i], models[i], device, False, c = i)
+##UNCOMMENT NEXT LINE FOR VISUALS
+#imageGrid(data, 5)
 
 labels = combine_labels(out, all_scores, NUM_LABELS, device)
 correct = (labels == lbltst).sum()

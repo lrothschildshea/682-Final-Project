@@ -1,11 +1,17 @@
 import torch #pylint: disable= E0401
 import torch.nn.functional as F #pylint: disable= E0401
 
-def check_accuracy(loader, model, device, train):
-    
+import numpy as np
+from visuals import imageGrid, produceSingleImage
+
+def check_accuracy(loader, model, device, train, c = None):  
+    data = None
+    count = None
     if train:
         print('        Checking accuracy on validation set')
     else:
+        data = np.full(5,None)
+        count = 0
         print('    Checking accuracy on test set')
     num_correct = 0
     num_samples = 0
@@ -16,6 +22,7 @@ def check_accuracy(loader, model, device, train):
     all_scores = all_scores.to(device = device, dtype = torch.float)
     out = out.to(device=device, dtype=torch.long)
     with torch.no_grad():
+
         for x, y in loader:
             x = x.to(device=device, dtype=torch.float32)  # move to device, e.g. GPU
             y = y.to(device=device, dtype=torch.long)
@@ -25,6 +32,18 @@ def check_accuracy(loader, model, device, train):
             if not train:
                 out = torch.cat((out, preds), 0)
                 all_scores = torch.cat((all_scores, scores), 0)
+                if count < 5:
+                    temp_x = x.cpu().numpy()
+                    temp_y = y.cpu().numpy()
+                    temp_preds = preds.cpu().numpy()
+
+                    for t in range(temp_y.size):
+                        if temp_y[t] == 0 and temp_preds[t] == 1:
+                            data[count] = temp_x[t]
+                            count += 1
+                        if count == 5:
+                            break
+
             num_correct += (preds == y).sum()
             num_samples += preds.size(0)
         acc = float(num_correct) / num_samples
@@ -34,7 +53,7 @@ def check_accuracy(loader, model, device, train):
         else:
             print('    Got %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
             print()
-            return out, all_scores
+            return out, all_scores, data
 
 def train_model(model, optimizer, device, loader_train, loader_val, epochs=1):
     model = model.to(device=device)
