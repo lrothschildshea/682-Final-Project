@@ -1,5 +1,5 @@
-import torch #pylint: disable= E0401
-import torch.nn.functional as F #pylint: disable= E0401
+import torch
+import torch.nn.functional as F
 
 import numpy as np
 from visuals import imageGrid, produceSingleImage
@@ -15,7 +15,7 @@ def check_accuracy(loader, model, device, train, c = None):
         print('    Checking accuracy on test set')
     num_correct = 0
     num_samples = 0
-    model.eval()  # set model to evaluation mode
+    model.eval()
 
     all_scores = torch.tensor([])
     out = torch.tensor([])
@@ -24,7 +24,7 @@ def check_accuracy(loader, model, device, train, c = None):
     with torch.no_grad():
 
         for x, y in loader:
-            x = x.to(device=device, dtype=torch.float32)  # move to device, e.g. GPU
+            x = x.to(device=device, dtype=torch.float32)
             y = y.to(device=device, dtype=torch.long)
 
             scores = model(x)
@@ -49,19 +49,19 @@ def check_accuracy(loader, model, device, train, c = None):
         acc = float(num_correct) / num_samples
 
         if train:
-            print('        Got %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
+            print('         %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
         else:
-            print('    Got %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
+            print('     %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
             print()
-            return out, all_scores, data
+            return out, all_scores, data, num_correct
 
 def train_model(model, optimizer, device, loader_train, loader_val, epochs=1):
     model = model.to(device=device)
     for e in range(epochs):
         print('    epoch #' + str(e + 1))
         print()
-        for t, (x, y) in enumerate(loader_train):
-            model.train()  # put model to training mode
+        for itn, (x, y) in enumerate(loader_train):
+            model.train()
             x = x.to(device=device, dtype=torch.float32)
             y = y.to(device=device, dtype=torch.long)
             
@@ -71,8 +71,8 @@ def train_model(model, optimizer, device, loader_train, loader_val, epochs=1):
             loss.backward()
             optimizer.step()
 
-            if t % 100 == 0:
-                print('        Iteration %d, loss = %.4f' % (t, loss.item()))
+            if itn % 175 == 0:
+                print('        Iteration %d, loss = %.4f' % (itn, loss.item()))
                 check_accuracy(loader_val, model, device, True)
                 print()
 
@@ -87,18 +87,6 @@ def combine_labels(labelset, scoreset, num_labels, device):
                     labels[j] = i
                 elif  torch.abs(scoreset[labels[j]][j][0] - scoreset[labels[j]][j][1]) < torch.abs(scoreset[i][j][0] - scoreset[i][j][1]):
                     labels[j] = i
-
-    return labels
-
-def combine_labels_2(labelset, num_labels, device):
-    labels = torch.ones(10000, dtype=torch.long) * 10
-    labels = labels.to(device=device, dtype=torch.long)
-    print('Combining Labels')
-    for i in range(num_labels):
-        for j in range(10000):
-            if labelset[i][j] == 1:
-                labels[j] = i
-
     return labels
 
 def count_collisions(labelset, num_labels, device):
