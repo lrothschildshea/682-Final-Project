@@ -1,5 +1,5 @@
-import torch #pylint: disable= E0401
-import torch.nn.functional as F #pylint: disable= E0401
+import torch
+import torch.nn.functional as F
 
 def check_accuracy(loader, model, device, train):
     
@@ -9,7 +9,7 @@ def check_accuracy(loader, model, device, train):
         print('    Checking accuracy on test set')
     num_correct = 0
     num_samples = 0
-    model.eval()  # set model to evaluation mode
+    model.eval()
 
     all_scores = torch.tensor([])
     out = torch.tensor([])
@@ -41,8 +41,8 @@ def train_model(model, optimizer, device, loader_train, loader_val, epochs=1):
     for e in range(epochs):
         print('    epoch #' + str(e + 1))
         print()
-        for t, (x, y) in enumerate(loader_train):
-            model.train()  # put model to training mode
+        for itn, (x, y) in enumerate(loader_train):
+            model.train()
             x = x.to(device=device, dtype=torch.float32)
             y = y.to(device=device, dtype=torch.long)
             
@@ -52,8 +52,8 @@ def train_model(model, optimizer, device, loader_train, loader_val, epochs=1):
             loss.backward()
             optimizer.step()
 
-            if t % 175 == 0:
-                print('        Iteration %d, loss = %.4f' % (t, loss.item()))
+            if itn % 175 == 0:
+                print('        Iteration %d, loss = %.4f' % (itn, loss.item()))
                 check_accuracy(loader_val, model, device, True)
                 print()
 

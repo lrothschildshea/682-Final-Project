@@ -23,12 +23,12 @@ start = time()
 loader_train, loader_val, loader_test = getDataPyTorch()
 
 USE_GPU = True
-
 if USE_GPU and torch.cuda.is_available():
     device = torch.device('cuda')
 else:
     device = torch.device('cpu')
-print('using device:', device)
+
+print('Device:', device)
 
 NUM_LABELS = 10
 NUM_EPOCHS = 1
