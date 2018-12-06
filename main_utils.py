@@ -4,11 +4,15 @@ import torch.nn.functional as F
 import numpy as np
 from visuals import imageGrid, produceSingleImage
 
-def check_accuracy(loader, model, device, train, c = None):  
+def check_accuracy(loader, model, device, train, c = None, check_val = False):  
     data = None
     count = None
     if train:
         print('        Checking accuracy on validation set')
+    elif check_val:
+        data = np.full(5,None)
+        count = 0
+        print('    Checking accuracy on validation set')
     else:
         data = np.full(5,None)
         count = 0
