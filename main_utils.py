@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import numpy as np
 from visuals import imageGrid, produceSingleImage, imageStrip
 
-def check_accuracy(loader, model, device, train, c = None):  
+def check_accuracy(loader, model, device, train, c = None, check_val = False):  
     data_fp = None
     data_fn = None
     count_fp = None
