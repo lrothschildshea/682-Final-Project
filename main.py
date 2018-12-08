@@ -36,8 +36,8 @@ else:
 print('Device:', device)
 
 NUM_LABELS = 10
-NUM_EPOCHS = 50
-NUM_TRAINING = 2
+NUM_EPOCHS = 40
+NUM_TRAINING = 1
 
 if NUM_LABELS < 1 or NUM_LABELS > 10:
     NUM_LABELS = 10
