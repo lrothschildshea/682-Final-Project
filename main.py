@@ -75,7 +75,7 @@ for i in range(NUM_LABELS):
         print('Training Model #' + str(i+1) + '-' + str(j+1))
         idx = i*NUM_TRAINING + j
         train_model(models[idx], optimizers[idx], device, llt, llv, epochs=NUM_EPOCHS)
-        _, _, _, _,acc = check_accuracy(llv, models[idx], device, False, check_val = True)
+        _, _, _, _, acc = check_accuracy(llv, models[idx], device, False, check_val = True)
         if acc.item() > best_acc:
             best_acc = acc.item()
             best_models[i] = models[idx]
