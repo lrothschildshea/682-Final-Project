@@ -11,6 +11,10 @@ def check_accuracy(loader, model, device, train, c = None):
     count_fn = None
     if train:
         print('        Checking accuracy on validation set')
+    elif check_val:
+        data = np.full(5,None)
+        count = 0
+        print('    Checking accuracy on validation set')
     else:
         data_fp = np.full(5,None)
         data_fn = np.full(5,None)
