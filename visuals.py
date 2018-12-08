@@ -45,6 +45,8 @@ def imageGrid(loader, sample_per_class):
     for s,c in enumerate(classes):
         class_array = data[s]
         for t,i in enumerate(class_array):
+            if type(i) == 'None':
+                continue
             plt_class = s * len(class_array) + t + 1
             plt.subplot(num_classes, sample_per_class, plt_class)
             comp = compressImage(i)
@@ -71,6 +73,20 @@ def collectImages(loader, sample_per_class):
         if temp_sample_per_class == 0:
             continue
     return all_data
+
+def imageStrip(iterator):
+    classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+    num_classes = len(classes)
+    for i in range(num_classes):
+        for t,x in enumerate(iterator):
+            if i == x[1]:
+                plt_class = i + 1
+                plt.subplot(1, num_classes, plt_class)
+                comp = compressImage(x[0])
+                plt.imshow(comp)
+                plt.axis('off')
+                break
+    plt.show()
 
 #LABEL = -1
 #while(LABEL < 0 or LABEL > 9):

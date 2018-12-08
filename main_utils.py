@@ -2,16 +2,20 @@ import torch
 import torch.nn.functional as F
 
 import numpy as np
-from visuals import imageGrid, produceSingleImage
+from visuals import imageGrid, produceSingleImage, imageStrip
 
 def check_accuracy(loader, model, device, train, c = None):  
-    data = None
-    count = None
+    data_fp = None
+    data_fn = None
+    count_fp = None
+    count_fn = None
     if train:
         print('        Checking accuracy on validation set')
     else:
-        data = np.full(5,None)
-        count = 0
+        data_fp = np.full(5,None)
+        data_fn = np.full(5,None)
+        count_fp = 0
+        count_fn = 0
         print('    Checking accuracy on test set')
     num_correct = 0
     num_samples = 0
@@ -32,16 +36,20 @@ def check_accuracy(loader, model, device, train, c = None):
             if not train:
                 out = torch.cat((out, preds), 0)
                 all_scores = torch.cat((all_scores, scores), 0)
-                if count < 5:
+                if (count_fp < 5 or count_fn < 5) and c != None:
                     temp_x = x.cpu().numpy()
                     temp_y = y.cpu().numpy()
                     temp_preds = preds.cpu().numpy()
-
                     for t in range(temp_y.size):
-                        if temp_y[t] == 0 and temp_preds[t] == 1:
-                            data[count] = temp_x[t]
-                            count += 1
-                        if count == 5:
+                        #false positive
+                        if count_fp < 5 and temp_y[t] == 0 and temp_preds[t] == 1:
+                            data_fp[count_fp] = temp_x[t]
+                            count_fp += 1
+                        #false negative
+                        if count_fn < 5 and temp_y[t] == 1 and temp_preds[t] == 0:
+                            data_fn[count_fn] = temp_x[t]
+                            count_fn += 1
+                        if count_fp == 5 and count_fn == 5:
                             break
 
             num_correct += (preds == y).sum()
@@ -53,7 +61,7 @@ def check_accuracy(loader, model, device, train, c = None):
         else:
             print('     %d / %d correct (%.2f)' % (num_correct, num_samples, 100 * acc))
             print()
-            return out, all_scores, data, num_correct
+            return out, all_scores, data_fp, data_fn, num_correct
 
 def train_model(model, optimizer, device, loader_train, loader_val, epochs=1):
     model = model.to(device=device)
@@ -89,12 +97,16 @@ def combine_labels(labelset, scoreset, num_labels, device):
                     labels[j] = i
     return labels
 
-def count_collisions(labelset, num_labels, device):
+def count_collisions(labelset, num_labels, device, loader_test):
     print('Counting label collisions and unlabled images')
     labels = torch.zeros(10000, dtype=torch.long)
     labels = labels.to(device=device, dtype=torch.long)
+
     collision = 0
     unlabeled = 0
+    iterator = []
+    classes = np.zeros(10)
+    num = np.ones(10)
 
     for i in range(num_labels):
         labels += labelset[i]
@@ -103,7 +115,22 @@ def count_collisions(labelset, num_labels, device):
             collision += labels[i]-1
         if labels[i] == 0:
             unlabeled += 1
-
+            for t,(x, y) in enumerate(loader_test):
+                temp_x = x.cpu().numpy()
+                temp_y = y.cpu().numpy()
+                for s,c in enumerate(temp_y):
+                    img = temp_x[s]
+                    if t*64 + s == i:
+                        classes[c] += 1
+                        if len(iterator) < 10:
+                            if num[c] == 1:
+                                num[c] -= 1
+                                iterator.append((img, c))
+    
     print("%d Label Collsions" % collision)
     print("%d unlabeled" % unlabeled)
-    print()
+    titles = ['Airplanes', 'Automobiles', 'Birds', 'Cats', 'Deer', 'Dogs', 'Frogs', 'Horses', 'Ships', 'Trucks']
+    for t,title in enumerate(titles):
+        print("%i/%i = %3.2f of unlabeled images were %s" % (classes[t], unlabeled, classes[t]/unlabeled, title))
+    
+    return iterator

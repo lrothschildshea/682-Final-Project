@@ -18,11 +18,14 @@ from pytorchNetworks.allLabelsNetwork import *
 from main_utils import *
 from data import relabelDataPyTorch, getDataPyTorch
 import numpy as np
-from visuals import imageGrid
+from visuals import imageGrid, imageStrip
+import copy
 
 start = time()
 
 loader_train, loader_val, loader_test = getDataPyTorch()
+
+loader_test = copy.deepcopy(loader_test)
 
 USE_GPU = True
 if USE_GPU and torch.cuda.is_available():
@@ -33,7 +36,7 @@ else:
 print('Device:', device)
 
 NUM_LABELS = 10
-NUM_EPOCHS = 1
+NUM_EPOCHS = 10
 NUM_TRAINING = 1
 
 if NUM_EPOCHS < 1:
@@ -70,11 +73,11 @@ for i in range(NUM_LABELS):
         print('Training Model #' + str(i+1) + '-' + str(j+1))
         idx = i*NUM_TRAINING + j
         train_model(models[idx], optimizers[idx], device, llt, llv, epochs=NUM_EPOCHS)
-        _, _, _, acc = check_accuracy(llv, models[idx], device, False)
+        _, _, _, _,acc = check_accuracy(llv, models[idx], device, False)
         if acc.item() > best_acc:
             best_acc = acc.item()
             best_models[i] = models[idx]
-
+'''
 print('Training 10 label network')
 train_model(m, o, device, loader_train, loader_val, epochs=NUM_EPOCHS)
 
@@ -84,18 +87,24 @@ print()
 print()
 print('Checking Accuracy for All Labels Model')
 check_accuracy(loader_test, m, device, False)
-
-data = [None]*10
+'''
+data_fp = [None]*10
+data_fn = [None]*10
 for i in range(NUM_LABELS):
     print('Checking Accuracy for Model #' + str(i+1))
-    out[i],all_scores[i], data[i], _ = check_accuracy(lltst[i], models[i], device, False, c = i)
-##UNCOMMENT NEXT LINE FOR VISUALS
-#imageGrid(data, 5)
+    out[i],all_scores[i], data_fp[i], data_fn[i], _ = check_accuracy(lltst[i], models[i], device, False, c = i)
+
+
 
 labels = combine_labels(out, all_scores, NUM_LABELS, device)
 correct = (labels == lbltst).sum()
 print(' %d / 10000 correct (%.2f)' % (correct, (float(correct)/100.0)))
-count_collisions(out, NUM_LABELS, device)
+iterator = count_collisions(out, NUM_LABELS, device, loader_test)
+
+##UNCOMMENT NEXT LINES FOR VISUALS
+imageGrid(data_fp, 5)
+imageGrid(data_fn, 5)
+imageStrip(iterator)
 
 end = time()
 print()
