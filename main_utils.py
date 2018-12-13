@@ -103,6 +103,30 @@ def combine_labels(labelset, scoreset, num_labels, device):
                     labels[j] = i
     return labels
 
+def combine_labels_2(labelset, num_labels, device):
+    labels = torch.ones(10000, dtype=torch.long) * 10
+    labels = labels.to(device=device, dtype=torch.long)
+    print('Combining Labels')
+    for i in range(num_labels):
+        for j in range(10000):
+            if labelset[i][j] == 1:
+                labels[j] = i
+
+    return labels
+
+def combine_labels_3(labelset, scoreset, num_labels, device):
+    labels = torch.ones(10000, dtype=torch.long) * 10
+    labels = labels.to(device=device, dtype=torch.long)
+    print('Combining Labels')
+    for i in range(num_labels):
+        for j in range(10000):
+            if labelset[i][j] == 1:
+                if labels[j] == 10:
+                    labels[j] = i
+                elif  np.exp(scoreset[labels[j]][j][1])/(np.exp(scoreset[labels[j]][j][1]) + np.exp(scoreset[labels[j]][j][0])) < np.exp(scoreset[i][j][1])/(np.exp(scoreset[i][j][0]) + np.exp(scoreset[i][j][1])):
+                    labels[j] = i
+    return labels
+
 def count_collisions(labelset, num_labels, device, loader_test):
     print('Counting label collisions and unlabled images')
     labels = torch.zeros(10000, dtype=torch.long)

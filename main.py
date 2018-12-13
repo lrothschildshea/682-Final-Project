@@ -36,7 +36,7 @@ else:
 print('Device:', device)
 
 NUM_LABELS = 10
-NUM_EPOCHS = 40
+NUM_EPOCHS = 1
 NUM_TRAINING = 1
 
 if NUM_LABELS < 1 or NUM_LABELS > 10:
@@ -79,7 +79,7 @@ for i in range(NUM_LABELS):
         if acc.item() > best_acc:
             best_acc = acc.item()
             best_models[i] = models[idx]
-
+'''
 print('Training 10 label network')
 train_model(m, o, device, loader_train, loader_val, epochs=NUM_EPOCHS)
 
@@ -89,7 +89,7 @@ print()
 print()
 print('Checking Accuracy for All Labels Model')
 check_accuracy(loader_test, m, device, False)
-
+'''
 data_fp = [None]*10
 data_fn = [None]*10
 for i in range(NUM_LABELS):
@@ -97,17 +97,31 @@ for i in range(NUM_LABELS):
     out[i],all_scores[i], data_fp[i], data_fn[i], _ = check_accuracy(lltst[i], models[i], device, False, c = i)
 
 
-
+print('Toms way')
 labels = combine_labels(out, all_scores, NUM_LABELS, device)
 correct = (labels == lbltst).sum()
 print(' %d / 10000 correct (%.2f)' % (correct, (float(correct)/100.0)))
-iterator = count_collisions(out, NUM_LABELS, device, loader_test)
 
+print()
+print('Original way')
+labels = combine_labels_2(out, NUM_LABELS, device)
+correct = (labels == lbltst).sum()
+print(' %d / 10000 correct (%.2f)' % (correct, (float(correct)/100.0)))
+
+print()
+print('Liams way')
+labels = combine_labels_3(out, all_scores, NUM_LABELS, device)
+correct = (labels == lbltst).sum()
+print(' %d / 10000 correct (%.2f)' % (correct, (float(correct)/100.0)))
+
+
+iterator = count_collisions(out, NUM_LABELS, device, loader_test)
+'''
 ##UNCOMMENT NEXT LINES FOR VISUALS
 imageGrid(data_fp, 5)
 imageGrid(data_fn, 5)
 imageStrip(iterator)
-
+'''
 end = time()
 print()
 print('Runtime: %d Minutes and %f Seconds' % (((end-start)//60), ((end-start)%60)))
